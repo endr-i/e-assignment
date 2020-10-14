@@ -17,6 +17,13 @@ func NewRouter(config Config) *chi.Mux {
 	r.Use(middleware.Recoverer)
 
 	r.Post("/reg", registerHandler)
+	r.Route("/operation", func(r chi.Router) {
+		r.Post("/refill", operationRefillHandler)
+		r.Post("/transfer", operationTransferHandler)
+	})
+	r.Route("/rate", func(r chi.Router) {
+		r.Post("/upload", rateUploadHandler)
+	})
 
 	return r
 }

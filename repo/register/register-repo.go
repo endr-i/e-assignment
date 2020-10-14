@@ -1,17 +1,16 @@
-package register
+package registerRepository
 
 import (
 	"assignment/entity"
-	"errors"
+	repo2 "assignment/repo"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 	"sync"
 )
 
 var (
-	once            sync.Once
-	repo            *repository
-	NoCurrencyError = errors.New("no such currency")
+	once sync.Once
+	repo *repository
 )
 
 type Form struct {
@@ -32,7 +31,7 @@ type repository struct {
 func (r *repository) Register(form Form) (*entity.Account, error) {
 	var currency entity.Currency
 	if err := r.db.Where("symbol=?", form.AccountSymbol).First(&currency).Error; err != nil {
-		return nil, NoCurrencyError
+		return nil, repo2.NoCurrencyError
 	}
 
 	user := entity.User{

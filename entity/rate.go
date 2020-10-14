@@ -11,6 +11,5 @@ type Rate struct {
 	Value      decimal.Decimal `gorm:"default:1"`
 	CurrencyId uuid.UUID
 	Currency   *Currency `gorm:"foreignKey:CurrencyId"`
-	Since      time.Time
-	Till       time.Time
+	DateTime   time.Time
 }

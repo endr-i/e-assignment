@@ -2,7 +2,6 @@ package pg
 
 import (
 	"assignment/entity"
-	"errors"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
@@ -58,7 +57,7 @@ func (initDataMigration) Up() error {
 		eurUuid := uuid.New()
 		tx.Create(&entity.Currency{
 			ID:     eurUuid,
-			Name:   "EU",
+			Name:   "Euro",
 			Symbol: "EUR",
 		})
 		rubUuid := uuid.New()
@@ -108,9 +107,7 @@ func GetMigrators() []Migrator {
 
 func GetVersion(db *gorm.DB) int32 {
 	var migration Migration
-	if err := db.First(&migration).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		db.Create(&migration)
-	}
+	db.FirstOrCreate(&migration)
 	return migration.Version
 }
 
