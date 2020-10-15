@@ -66,25 +66,21 @@ func (initDataMigration) Up() error {
 			Name:   "Russian ruble",
 			Symbol: "RUB",
 		})
-		since := time.Now()
-		till := time.Now().Add(24 * time.Hour)
+		now := time.Now()
 		tx.Create(&entity.Rate{
 			CurrencyId: usdUuid,
 			Value:      decimal.NewFromFloat(1),
-			Since:      since,
-			Till:       till,
+			DateTime:   now,
 		})
 		tx.Create(&entity.Rate{
 			CurrencyId: rubUuid,
 			Value:      decimal.NewFromFloat(0.013),
-			Since:      since,
-			Till:       till,
+			DateTime:   now,
 		})
 		tx.Create(&entity.Rate{
 			CurrencyId: eurUuid,
-			Value:      decimal.NewFromFloat(0.86),
-			Since:      since,
-			Till:       till,
+			Value:      decimal.NewFromFloat(1.17),
+			DateTime:   now,
 		})
 		return nil
 	})

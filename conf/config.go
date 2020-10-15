@@ -15,6 +15,7 @@ var (
 type Config struct {
 	Server server.Config
 	DB     pg.Config
+	Port   string `default:"3000"`
 }
 
 func GetConfig() Config {

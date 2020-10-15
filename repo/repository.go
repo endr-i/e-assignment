@@ -5,20 +5,13 @@ import (
 	"assignment/repo/operation"
 	rateRepository "assignment/repo/rate"
 	registerRepository "assignment/repo/register"
-	"errors"
+	reportRepository "assignment/repo/report"
 	"gorm.io/gorm"
 	"sync"
 )
 
 var (
-	once             sync.Once
-	InvalidUuidError = errors.New("invalid uuid")
-	NoCurrencyError  = errors.New("no currency")
-	NoUserError      = errors.New("no user")
-	NoAccountError   = errors.New("no account")
-	NoRateError      = errors.New("no rate")
-	LowBalance       = errors.New("low balance")
-	NoRatesToUpload  = errors.New("no rates to upload")
+	once sync.Once
 )
 
 func Init(db *gorm.DB) {
@@ -27,6 +20,7 @@ func Init(db *gorm.DB) {
 		registerRepository.Init(db)
 		accountRepo := accountRepository.InitRepo(db)
 		rateRepo := rateRepository.InitRepo(db)
-		operationRepository.InitRepo(db, accountRepo, rateRepo)
+		operationRepo := operationRepository.InitRepo(db, accountRepo, rateRepo)
+		reportRepository.InitRepo(db, accountRepo, operationRepo)
 	})
 }

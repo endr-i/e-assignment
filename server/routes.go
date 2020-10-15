@@ -1,14 +1,18 @@
 package server
 
 import (
-	"assignment/repo"
 	"assignment/repo/operation"
 	rateRepository "assignment/repo/rate"
 	"assignment/repo/register"
+	reportRepository "assignment/repo/report"
+	"assignment/utils"
 	"errors"
+	"fmt"
 	"github.com/go-chi/render"
 	"log"
 	"net/http"
+	"os"
+	"time"
 )
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +36,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	registerRepo := registerRepository.GetRepo()
 	account, err := registerRepo.Register(form)
 	if err != nil {
-		if errors.Is(err, repo.NoCurrencyError) {
+		if errors.Is(err, utils.NoCurrencyError) {
 			log.Println(err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		} else {
@@ -92,4 +96,34 @@ func rateUploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 	render.JSON(w, r, rates)
+}
+
+func reportAccountTransactionsHandler(w http.ResponseWriter, r *http.Request) {
+	form := reportRepository.AccountTransactionsReportForm{
+		Date:      r.URL.Query().Get("date"),
+		AccountId: r.URL.Query().Get("accountId"),
+	}
+
+	fileResponse := len(r.URL.Query().Get("file")) > 0
+
+	reportRepo := reportRepository.GetRepo()
+	reportData, err := reportRepo.AccountTransactionsReport(form)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+	if fileResponse {
+		fileName := fmt.Sprintf("%s%s.csv", "AccountTransactionsReport", time.Now().String())
+		filePath := fmt.Sprintf("%s/%s", os.TempDir(), fileName)
+		err := utils.CreateCSV(reportData.GetCSVData(), filePath)
+		if err != nil {
+			log.Println(err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		} else {
+			w.Header().Set("Content-Disposition", "attachment; filename="+fileName)
+			http.ServeFile(w, r, filePath)
+		}
+	} else {
+		render.JSON(w, r, reportData)
+	}
 }

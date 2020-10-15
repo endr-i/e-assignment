@@ -16,5 +16,5 @@ func main() {
 	db := pg.InitDB(config.DB)
 	repo.Init(db)
 	router := server.NewRouter(config.Server)
-	http.ListenAndServe(fmt.Sprintf(":%s", config.Server.Port), router)
+	http.ListenAndServe(fmt.Sprintf(":%s", config.Port), router)
 }

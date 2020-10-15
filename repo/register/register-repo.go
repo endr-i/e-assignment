@@ -2,23 +2,17 @@ package registerRepository
 
 import (
 	"assignment/entity"
-	repo2 "assignment/repo"
+	"assignment/utils"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 	"sync"
+	"time"
 )
 
 var (
 	once sync.Once
 	repo *repository
 )
-
-type Form struct {
-	UserName      string
-	UserCity      string
-	UserCountry   string
-	AccountSymbol string
-}
 
 type IRepository interface {
 	Register(form Form) (*entity.Account, error)
@@ -31,7 +25,7 @@ type repository struct {
 func (r *repository) Register(form Form) (*entity.Account, error) {
 	var currency entity.Currency
 	if err := r.db.Where("symbol=?", form.AccountSymbol).First(&currency).Error; err != nil {
-		return nil, repo2.NoCurrencyError
+		return nil, utils.NoCurrencyError
 	}
 
 	user := entity.User{
@@ -47,6 +41,7 @@ func (r *repository) Register(form Form) (*entity.Account, error) {
 		UserId:     user.ID,
 		CurrencyId: currency.ID,
 		Balance:    decimal.NewFromInt32(0),
+		DateTime:   time.Now(),
 	}
 	if err := r.db.Create(&account).Scan(&account).Error; err != nil {
 		return nil, err

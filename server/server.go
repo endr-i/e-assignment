@@ -6,10 +6,15 @@ import (
 )
 
 type Config struct {
-	Port string `default:"3000"`
+	TempDir string `default:"/tmp"`
 }
 
+var conf Config
+
 func NewRouter(config Config) *chi.Mux {
+
+	conf = config
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -23,6 +28,9 @@ func NewRouter(config Config) *chi.Mux {
 	})
 	r.Route("/rate", func(r chi.Router) {
 		r.Post("/upload", rateUploadHandler)
+	})
+	r.Route("/report", func(r chi.Router) {
+		r.Get("/account-transactions", reportAccountTransactionsHandler)
 	})
 
 	return r

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
+	"time"
 )
 
 type Account struct {
@@ -13,20 +14,20 @@ type Account struct {
 	CurrencyId uuid.UUID
 	Currency   *Currency `gorm:"foreignKey:CurrencyId"`
 	Balance    decimal.Decimal
+	DateTime   time.Time
 }
 
 func (account *Account) MarshalJSON() ([]byte, error) {
-	k := decimal.NewFromInt32(100)
-	account.Balance = account.Balance.Mul(k).Floor().Div(k)
+	balance, _ := account.Balance.Round(2).Float64()
 	return json.Marshal(struct {
 		ID       uuid.UUID
 		User     *User
 		Currency *Currency
-		Balance  decimal.Decimal
+		Balance  float64
 	}{
 		ID:       account.ID,
 		User:     account.User,
 		Currency: account.Currency,
-		Balance:  account.Balance,
+		Balance:  balance,
 	})
 }
