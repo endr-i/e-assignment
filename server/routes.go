@@ -26,7 +26,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	var form registerRepository.Form
 	err := render.DecodeJSON(r.Body, &form)
 	if err != nil {
-		http.Error(w, "cannot parse JSON", http.StatusBadRequest)
+		renderError(w, r, "cannot parse JSON", http.StatusBadRequest)
 		return
 	}
 	//err := decodeJSONBody(w, r, &form)
@@ -45,7 +45,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	account, err := registerRepo.Register(form)
 	if err != nil {
 		logger.Error(err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		renderError(w, r, err.Error(), http.StatusBadRequest)
 		return
 	}
 	logger.Info(account)
@@ -64,7 +64,7 @@ func operationRefillHandler(w http.ResponseWriter, r *http.Request) {
 	var form operationRepository.RefillForm
 	err := render.DecodeJSON(r.Body, &form)
 	if err != nil {
-		http.Error(w, "cannot parse JSON", http.StatusBadRequest)
+		renderError(w, r, "cannot parse JSON", http.StatusBadRequest)
 		return
 	}
 	logger.WithField("request", form)
@@ -72,7 +72,7 @@ func operationRefillHandler(w http.ResponseWriter, r *http.Request) {
 	operation, err := operationRepo.Refill(form)
 	if err != nil {
 		logger.Error(err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		renderError(w, r, err.Error(), http.StatusBadRequest)
 		return
 	}
 	logger.Info(operation)
@@ -91,7 +91,7 @@ func operationTransferHandler(w http.ResponseWriter, r *http.Request) {
 	var form operationRepository.TransferForm
 	err := render.DecodeJSON(r.Body, &form)
 	if err != nil {
-		http.Error(w, "cannot parse JSON", http.StatusBadRequest)
+		renderError(w, r, "cannot parse JSON", http.StatusBadRequest)
 		return
 	}
 	logger.WithField("request", form)
@@ -99,8 +99,7 @@ func operationTransferHandler(w http.ResponseWriter, r *http.Request) {
 	operation, err := operationRepo.Transfer(form)
 	if err != nil {
 		logger.Error(err.Error())
-		log.Println(err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		renderError(w, r, err.Error(), http.StatusBadRequest)
 		return
 	}
 	logger.Info(operation)
@@ -119,7 +118,7 @@ func rateUploadHandler(w http.ResponseWriter, r *http.Request) {
 	var form rateRepository.UploadRatesForm
 	err := render.DecodeJSON(r.Body, &form)
 	if err != nil {
-		http.Error(w, "cannot parse JSON", http.StatusBadRequest)
+		renderError(w, r, "cannot parse JSON", http.StatusBadRequest)
 		return
 	}
 	logger.WithField("request", form)
@@ -128,7 +127,7 @@ func rateUploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		logger.Error(err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		renderError(w, r, err.Error(), http.StatusBadRequest)
 	}
 	logger.Info(rates)
 	render.JSON(w, r, rates)
@@ -157,7 +156,7 @@ func reportAccountTransactionsHandler(w http.ResponseWriter, r *http.Request) {
 	reportData, err := reportRepo.AccountTransactionsReport(form)
 	if err != nil {
 		logger.Error(err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		renderError(w, r, err.Error(), http.StatusBadRequest)
 	}
 	logger.Info(reportData)
 	if fileResponse {
@@ -166,7 +165,7 @@ func reportAccountTransactionsHandler(w http.ResponseWriter, r *http.Request) {
 		err := utils.CreateCSV(reportData.GetCSVData(), filePath)
 		if err != nil {
 			logger.Error(err.Error())
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			renderError(w, r, err.Error(), http.StatusInternalServerError)
 		} else {
 			w.Header().Set("Content-Disposition", "attachment; filename="+fileName)
 			http.ServeFile(w, r, filePath)
