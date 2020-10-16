@@ -1,13 +1,13 @@
 version: '3'
 services:
   db:
-    container_name: exness_assignment_db
+    container_name: e_assignment_db
     image: postgres:12
     restart: always
     ports:
       - '5435:5432'
     environment:
-      - POSTGRES_DB=exness
+      - POSTGRES_DB=e_assignment
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgresPass
     volumes:
@@ -21,7 +21,7 @@ services:
       - .env
     depends_on:
       - db
-    entrypoint: ["./wait-for-it.sh", "-s" ,"-t", "20", "exness_assignment_db:5432", "--"]
+    entrypoint: ["./wait-for-it.sh", "-s" ,"-t", "20", "e_assignment_db:5432", "--"]
     command: ["./_dist/app"]
     ports:
       - '8080:8080'

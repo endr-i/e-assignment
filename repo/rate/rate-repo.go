@@ -76,6 +76,9 @@ func (r *repository) GetCurrencyRate(currencyId uuid.UUID, rateTime time.Time) (
 //}
 
 func (r *repository) Create(form CreateForm, rateTime time.Time) (*entity.Rate, error) {
+	if form.Value <= 0 {
+		return nil, utils.InvalidValueError
+	}
 	var currency entity.Currency
 	if err := r.db.First(&currency, "symbol=?", form.Symbol).Error; err != nil {
 		return nil, utils.NoCurrencyError

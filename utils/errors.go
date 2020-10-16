@@ -13,4 +13,5 @@ var (
 	InvalidDateFormatError = errors.New("invalid date format")
 	ForbiddenCurrencyError = errors.New("forbidden currency")
 	CannotWriteToFileError = errors.New("cannot write to file")
+	InvalidValueError      = errors.New("invalid value")
 )

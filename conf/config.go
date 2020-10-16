@@ -23,7 +23,7 @@ type Config struct {
 func GetConfig() Config {
 	once.Do(func() {
 		configor.New(&configor.Config{
-			ENVPrefix: "EXNESS",
+			ENVPrefix: "E",
 		}).Load(&config, "./config.yml")
 	})
 	return config

@@ -45,6 +45,10 @@ func GetRepo() IRepository {
 }
 
 func (r *repository) Refill(form RefillForm) (*entity.Operation, error) {
+	if form.Sum <= 0 {
+		return nil, utils.InvalidValueError
+	}
+
 	account, err := r.accountRepo.GetById(form.AccountId)
 	if err != nil {
 		return nil, err
@@ -111,6 +115,10 @@ func (r *repository) Refill(form RefillForm) (*entity.Operation, error) {
 }
 
 func (r *repository) Transfer(form TransferForm) (*entity.Operation, error) {
+	if form.Sum <= 0 {
+		return nil, utils.InvalidValueError
+	}
+
 	accountFrom, err := r.accountRepo.GetById(form.From)
 	if err != nil {
 		return nil, err

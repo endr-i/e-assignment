@@ -13,7 +13,7 @@ var (
 )
 
 type Config struct {
-	Dsn string `default:"user=postgres password=postgresPass host=localhost dbname=exness port=5432 sslmode=disable"`
+	Dsn string `default:"user=postgres password=postgresPass host=localhost dbname=e_assignment port=5432 sslmode=disable"`
 }
 
 func InitDB(config Config) *gorm.DB {
