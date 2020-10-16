@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"assignment/logger"
 	"assignment/pg"
 	"assignment/server"
 	"github.com/jinzhu/configor"
@@ -15,7 +16,8 @@ var (
 type Config struct {
 	Server server.Config
 	DB     pg.Config
-	Port   string `default:"3000"`
+	Log    logger.LogConfig
+	Port   string `default:"8080"`
 }
 
 func GetConfig() Config {

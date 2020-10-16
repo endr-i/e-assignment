@@ -1,9 +1,9 @@
 package pg
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 	"sync"
 )
 

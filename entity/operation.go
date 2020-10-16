@@ -18,9 +18,9 @@ var operationTypes = []string{"Refill", "Transfer"}
 type Operation struct {
 	ID           uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primarykey"`
 	Type         int
-	Details      datatypes.JSON
-	DateTime     time.Time     `gorm:"default:CURRENT_TIMESTAMP"`
-	Transactions []Transaction `gorm:"foreignKey:OperationId"`
+	Details      datatypes.JSON `swaggertype:"object"`
+	DateTime     time.Time      `gorm:"default:CURRENT_TIMESTAMP"`
+	Transactions []Transaction  `gorm:"foreignKey:OperationId"`
 }
 
 func (o *Operation) GetOperationType() string {

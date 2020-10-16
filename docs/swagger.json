@@ -1,0 +1,452 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is an assignment",
+        "title": "Swagger Example API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/operation/refill": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Refill operation",
+                "operationId": "operationRefill",
+                "parameters": [
+                    {
+                        "description": "params",
+                        "name": "website",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/operationRepository.RefillForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Operation"
+                        }
+                    }
+                }
+            }
+        },
+        "/operation/transfer": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Transfer operation",
+                "operationId": "operationTransfer",
+                "parameters": [
+                    {
+                        "description": "params",
+                        "name": "website",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/operationRepository.TransferForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Operation"
+                        }
+                    }
+                }
+            }
+        },
+        "/rate/upload": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Upload new rates",
+                "operationId": "rateUpload",
+                "parameters": [
+                    {
+                        "description": "params",
+                        "name": "website",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rateRepository.UploadRatesForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Rate"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reg": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Creates new user + account",
+                "operationId": "register",
+                "parameters": [
+                    {
+                        "description": "params",
+                        "name": "website",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/registerRepository.Form"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Account"
+                        }
+                    }
+                }
+            }
+        },
+        "/report/account-transactions": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Generates report",
+                "operationId": "reportAccountTransactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Date of report (eg 2020-10-16)",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Account id",
+                        "name": "accountId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "file output",
+                        "name": "file",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/reportRepository.AccountTransactionsReportData"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.Account": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number"
+                },
+                "currency": {
+                    "$ref": "#/definitions/entity.Currency"
+                },
+                "currencyId": {
+                    "type": "string"
+                },
+                "dateTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/entity.User"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Currency": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Operation": {
+            "type": "object",
+            "properties": {
+                "dateTime": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "object"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Transaction"
+                    }
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.Rate": {
+            "type": "object",
+            "properties": {
+                "currency": {
+                    "$ref": "#/definitions/entity.Currency"
+                },
+                "currencyId": {
+                    "type": "string"
+                },
+                "dateTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "entity.Transaction": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "$ref": "#/definitions/entity.Account"
+                },
+                "accountId": {
+                    "type": "string"
+                },
+                "accountRateValue": {
+                    "type": "number"
+                },
+                "currency": {
+                    "$ref": "#/definitions/entity.Currency"
+                },
+                "currencyId": {
+                    "type": "string"
+                },
+                "currencyRateValue": {
+                    "type": "number"
+                },
+                "dateTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "operation": {
+                    "$ref": "#/definitions/entity.Operation"
+                },
+                "operationId": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "description": "TODO: make countries list with foreign key",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "operationRepository.RefillForm": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "details": {
+                    "description": "Details of operation",
+                    "type": "object",
+                    "properties": {
+                        "source": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "sum": {
+                    "type": "number"
+                }
+            }
+        },
+        "operationRepository.TransferForm": {
+            "type": "object",
+            "properties": {
+                "currency": {
+                    "type": "string"
+                },
+                "details": {
+                    "description": "Details of operation",
+                    "type": "object",
+                    "properties": {
+                        "comment": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "from": {
+                    "type": "string"
+                },
+                "sum": {
+                    "type": "number"
+                },
+                "to": {
+                    "type": "string"
+                }
+            }
+        },
+        "rateRepository.CreateForm": {
+            "type": "object",
+            "properties": {
+                "symbol": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "rateRepository.UploadRatesForm": {
+            "type": "object",
+            "properties": {
+                "rates": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/rateRepository.CreateForm"
+                    }
+                }
+            }
+        },
+        "registerRepository.Form": {
+            "type": "object",
+            "properties": {
+                "accountSymbol": {
+                    "type": "string"
+                },
+                "userCity": {
+                    "type": "string"
+                },
+                "userCountry": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "reportRepository.AccountTransactionsReportData": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "$ref": "#/definitions/entity.Account"
+                },
+                "dateTime": {
+                    "type": "string"
+                },
+                "since": {
+                    "type": "string"
+                },
+                "till": {
+                    "type": "string"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/reportRepository.AccountTransactionsReportTransaction"
+                    }
+                }
+            }
+        },
+        "reportRepository.AccountTransactionsReportTransaction": {
+            "type": "object",
+            "properties": {
+                "accountRate": {
+                    "type": "number"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "currencyRate": {
+                    "type": "number"
+                },
+                "dateTime": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}
